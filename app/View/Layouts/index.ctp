@@ -13,7 +13,7 @@
   <!--   <link rel="stylesheet" href="/css/style.css?v=1.143"> -->
     <title>Sharua Meken</title>
 </head>
-    <body class="<?=$l?>" style="display: none">
+    <body class="<?=$l?>" >
     <div class="popup" id="alert_popup">
         <div class="alert <?=(isset($_SESSION['Message']['good']) || isset($_SESSION['Message']['bad'])) ? 'alert--active' : '';?>">
             <div class="container">
