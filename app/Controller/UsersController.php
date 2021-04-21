@@ -894,10 +894,31 @@ class UsersController extends AppController{
 			$results['Result']['results'] = json_decode($results['Result']['results'], true);
 			$xmlsignature = $results['Result']['xmlsignature'];
 			$printxml = urlencode($results['Result']['xmlsignature']);
-			$xml= (array) json_decode(json_encode(simplexml_load_string($xmlsignature,null,LIBXML_NOCDATA)), true);
-			$signature = json_decode(urldecode($xml['Document']), true);
+			$sign= (array) json_decode(json_encode($xmlsignature), true);
+			$signature = json_decode(urldecode($sign), true);
 
 			if(trim($xmlsignature)!=''){
+				$curl1 = curl_init();
+				curl_setopt_array($curl1, array(
+					CURLOPT_URL => "http://78.40.109.145:14579/",
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_ENCODING => "",
+					CURLOPT_MAXREDIRS => 10,
+					CURLOPT_TIMEOUT => 1000,
+					CURLOPT_FOLLOWLOCATION => true,
+					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+					CURLOPT_CUSTOMREQUEST => "POST",
+					CURLOPT_POSTFIELDS => json_encode(["version"=> "2.0", "method"=> "cms.extract", "params"=>["cms"=>$xmlsignature]]),
+					CURLOPT_HTTPHEADER => array(
+						"Content-Type: application/json"
+					),
+					));
+			
+				$extract = json_decode(curl_exec($curl1),true);
+				$isValidSign = $extract['status'] == 0 ;
+				$originalData = $extract['originalData'];
+				curl_close($curl1);
+
 				$curl = curl_init();
 				curl_setopt_array($curl, array(
 					CURLOPT_URL => "http://78.40.109.145:14579/",
@@ -908,8 +929,7 @@ class UsersController extends AppController{
 					CURLOPT_FOLLOWLOCATION => true,
 					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 					CURLOPT_CUSTOMREQUEST => "POST",
-					CURLOPT_POSTFIELDS => json_encode(["version"=> "1.0", "method"=> "XML.verify", "params"=>["xml"=>$xmlsignature]]),
-					// "{\n    \"version\": \"1.0\",\n    \"method\": \"XML.verify\",\n    \"params\": {\n        \"xml\":\"".."\"\n    }\n}",
+					CURLOPT_POSTFIELDS => json_encode(["version"=> "2.0", "method"=> "cms.verify", "params"=>["cms"=>$xmlsignature]]),
 					CURLOPT_HTTPHEADER => array(
 						"Content-Type: application/json"
 					),
@@ -944,7 +964,7 @@ class UsersController extends AppController{
 			$this->request->data = $data;
 			$title_for_layout = 'Личный кабинет';
 			$this->set(compact('id', 'data', 'user_id','title_for_layout', 'questions','check_moderators','results', 
-			'signature','xmlsignature','printxml','isValidSign', 'commonName','iin'
+			'sign','xmlsignature','printxml','isValidSign', 'commonName','iin'
 		));
 		}
 

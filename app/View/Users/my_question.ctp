@@ -75,10 +75,10 @@
                                                <?=$q1['answer'] ?>
                                         </div>
                                     </div>
-                                    <?php if($q1['answer'] != $signature['data[Question][results]['.$k.'][answer]']): ?>
+                                    <?php if($q1['answer'] != $sign['data[Question][results]['.$k.'][answer]']): ?>
                                         <div class="questionnaire_inner_unit">
                                             <div class="questionnaire_inner_row answer">
-                                            подписанный ответ <?=$signature['data[Question][results]['.$k.'][answer]']?>
+                                            подписанный ответ <?=$sign['data[Question][results]['.$k.'][answer]']?>
                                             </div>
                                         </div>
                                     <?php endif ?>
@@ -125,7 +125,7 @@ window.addEventListener("load", function(){
         console.log("Click");
         $("#signature").val("");
         var signData = encodeURI(JSON.stringify($("#questions").serializeObject()));
-        signXml("PKCS12", "SIGNATURE", "<root><Document>"+signData+"</Document></root>", postForm);
+        createCMSSignatureFromBase64("PKCS12", "SIGNATURE", btoa(signData), true , postForm);
     });
 
     window.postForm = function(ev){
