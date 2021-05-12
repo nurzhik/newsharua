@@ -936,9 +936,9 @@ class UsersController extends AppController{
 					));
 			
 					$verifycation = json_decode(curl_exec($curl),true);
-					$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['cert']['valid']==true ;
-					$commonName = $verifycation['result']['cert']['subject']['commonName'];
-					$iin = $verifycation['result']['cert']['subject']['iin'];
+					$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['signers'][0]['cert']['valid']==true ;
+					$commonName = $verifycation['result']['signers'][0]['cert']['subject']['commonName'];
+					$iin = $verifycation['result']['signers'][0]['cert']['subject']['iin'];
 			
 					curl_close($curl);
 			}
