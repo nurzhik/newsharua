@@ -1015,7 +1015,7 @@ class UsersController extends AppController{
 					CURLOPT_FOLLOWLOCATION => true,
 					CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 					CURLOPT_CUSTOMREQUEST => "POST",
-					CURLOPT_POSTFIELDS => json_encode(["version"=> "1.0", "method"=> "XML.verify", "params"=>["xml"=>$xmlsignature]]),
+					CURLOPT_POSTFIELDS => json_encode(["version"=> "2.0", "method"=> "cms.verify", "params"=>["cms"=>$xmlsignature]]),
 					// "{\n    \"version\": \"1.0\",\n    \"method\": \"XML.verify\",\n    \"params\": {\n        \"xml\":\"".."\"\n    }\n}",
 					CURLOPT_HTTPHEADER => array(
 						"Content-Type: application/json"
@@ -1023,9 +1023,9 @@ class UsersController extends AppController{
 					));
 			
 					$verifycation = json_decode(curl_exec($curl),true);
-					$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['cert']['valid']==true ;
-					$commonName = $verifycation['result']['cert']['subject']['commonName'];
-					$iin = $verifycation['result']['cert']['subject']['iin'];
+					$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['signers'][0]['cert']['valid']==true ;
+		                        $commonName = $verifycation['result']['signers'][0]['cert']['subject']['commonName'];
+		                        $iin = $verifycation['result']['signers'][0]['cert']['subject']['iin'];
 			
 					curl_close($curl);
 			}
@@ -1110,7 +1110,7 @@ class UsersController extends AppController{
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_CUSTOMREQUEST => "POST",
-		CURLOPT_POSTFIELDS => json_encode(["version"=> "1.0", "method"=> "XML.verify", "params"=>["xml"=>$signature]]),
+		CURLOPT_POSTFIELDS => json_encode(["version"=> "2.0", "method"=> "cms.verify", "params"=>["cms"=>$signature]]),
 		// "{\n    \"version\": \"1.0\",\n    \"method\": \"XML.verify\",\n    \"params\": {\n        \"xml\":\"".."\"\n    }\n}",
 		CURLOPT_HTTPHEADER => array(
 			"Content-Type: application/json"
@@ -1120,9 +1120,9 @@ class UsersController extends AppController{
 		$verifycation = json_decode(curl_exec($curl),true);
 		curl_close($curl);
 		
-		$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['cert']['valid']==true ;
-		$commonName = $verifycation['result']['cert']['subject']['commonName'];
-		$iin = $verifycation['result']['cert']['subject']['iin'];
+		$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['signers'][0]['cert']['valid']==true ;
+		$commonName = $verifycation['result']['signers'][0]['cert']['subject']['commonName'];
+		$iin = $verifycation['result']['signers'][0]['cert']['subject']['iin'];
 
 		if($user['iin'] != $iin){
 			// debug($user); die;
@@ -1166,7 +1166,7 @@ class UsersController extends AppController{
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_CUSTOMREQUEST => "POST",
-		CURLOPT_POSTFIELDS => json_encode(["version"=> "1.0", "method"=> "XML.verify", "params"=>["xml"=>$signature]]),
+		CURLOPT_POSTFIELDS => json_encode(["version"=> "2.0", "method"=> "cms.verify", "params"=>["cms"=>$signature]]),
 		// "{\n    \"version\": \"1.0\",\n    \"method\": \"XML.verify\",\n    \"params\": {\n        \"xml\":\"".."\"\n    }\n}",
 		CURLOPT_HTTPHEADER => array(
 			"Content-Type: application/json"
@@ -1176,9 +1176,9 @@ class UsersController extends AppController{
 		$verifycation = json_decode(curl_exec($curl),true);
 		curl_close($curl);
 		
-		$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['cert']['valid']==true ;
-		$commonName = $verifycation['result']['cert']['subject']['commonName'];
-		$iin = $verifycation['result']['cert']['subject']['iin'];
+		$isValidSign = $verifycation['status'] == 0 && $verifycation['result']['signers'][0]['cert']['valid']==true ;
+		$commonName = $verifycation['result']['signers'][0]['cert']['subject']['commonName'];
+		$iin = $verifycation['result']['signers'][0]['cert']['subject']['iin'];
 
 		if($user['iin'] != $iin){
 			// debug($user); die;
